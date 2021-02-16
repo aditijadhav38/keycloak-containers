@@ -55,8 +55,8 @@ jobs:
           file: ./server/Dockerfile
           target: registry
           build-args: |
-          GIT_BRANCH: ${{ steps.prep.outputs.git_branch }}
           platforms: ${{ steps.prep.outputs.platforms }}
           GIT_REPO: ${{ steps.prep.outputs.git_repo }}
-          tags: quay.io/aditijadhav38/${{ steps.prep.outputs.image }}:$GIT_BRANCH
+          GIT_BRANCH: ${{ steps.prep.outputs.git_branch }}
+          tags: quay.io/aditijadhav38/${{ steps.prep.outputs.image }}:${{ steps.prep.outputs.git_branch }}
           push: true
