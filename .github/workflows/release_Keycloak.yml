@@ -54,8 +54,8 @@ jobs:
           context: .
           file: ./server/Dockerfile
           build-args: |
-            GIT_REPO: ${{ steps.prep.outputs.git_repo }}
-            GIT_BRANCH: ${{ steps.prep.outputs.git_branch }}
+            GIT_REPO=${{ steps.prep.outputs.git_repo }}
+            GIT_BRANCH=${{ steps.prep.outputs.git_branch }}
           platforms: ${{ steps.prep.outputs.platforms }}
           tags: quay.io/aditijadhav38/${{ steps.prep.outputs.image }}:${{ steps.prep.outputs.git_branch }}
           push: true
