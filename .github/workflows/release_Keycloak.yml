@@ -53,7 +53,6 @@ jobs:
         with:
           context: .
           file: ./server/Dockerfile
-          target: registry
           build-args: |
             GIT_REPO: ${{ steps.prep.outputs.git_repo }}
             GIT_BRANCH: ${{ steps.prep.outputs.git_branch }}
