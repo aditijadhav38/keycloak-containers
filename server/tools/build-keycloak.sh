@@ -4,10 +4,10 @@
 # Build/download Keycloak #
 ###########################
 
-#if [ "$GIT_REPO" != "" ]; then
-#    if [ "$GIT_BRANCH" == "" ]; then
-#        GIT_BRANCH="master"
-#    fi
+if [ "$GIT_REPO" != "" ]; then
+    if [ "$GIT_BRANCH" == "" ]; then
+        GIT_BRANCH="master"
+    fi
 
     # Install Git
     microdnf install -y git
@@ -17,7 +17,7 @@
     curl -s https://apache.uib.no/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz | tar xz
     mv apache-maven-3.5.4 /opt/jboss/maven
     export M2_HOME=/opt/jboss/maven
-
+    export MAVEN_OPTS=-Xmx512m
     # Clone repository
     git clone --depth 1 https://github.com/$GIT_REPO.git -b $GIT_BRANCH /opt/jboss/keycloak-source
 
