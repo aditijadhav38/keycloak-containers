@@ -1,0 +1,62 @@
+name: Release jboss/keycloak
+
+on:
+  push:
+    branches: 
+      - buildx-GA
+
+jobs:
+  release-build-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone source code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Prepare
+        id: prep
+        run: |
+          GIT_BRANCH=12.0.1
+          echo ::set-output name=git_branch::${GIT_BRANCH}
+          IMAGE=jboss/keycloak
+          echo ::set-output name=image::${IMAGE}
+          PLATFORMS=$(cat PLATFORMS)
+          echo ::set-output name=platforms::${PLATFORMS}
+          GIT_REPO=keycloak/keycloak
+          echo ::set-output name=git_repo::${GIT_REPO}
+          
+      - name: Login to Quay.io
+        uses: azure/docker-login@v1
+        with:
+          login-server: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+
+      - name: Login to Docker Hub
+        uses: azure/docker-login@v1
+        with:
+          login-server: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Build and push images
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./server/Dockerfile
+          target: registry
+          build-args: |
+            GIT_BRANCH=${{ steps.prep.outputs.git_branch }}
+          platforms: ${{ steps.prep.outputs.platforms }}
+          GIT_REPO=${{ steps.prep.outputs.git_repo }}
+          tags: quay.io/aditijadhav38/${{ steps.prep.outputs.image }}:${{ steps.prep.outputs.git_branch }}
+          push: true
